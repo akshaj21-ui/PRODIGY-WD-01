@@ -1,0 +1,439 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Navigation Menu with Content</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+        }
+        
+        /* Navigation styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .navbar.scrolled {
+            background-color: #2c3e50;
+            padding: 0.5rem 2rem;
+        }
+        
+        .navbar.scrolled .logo {
+            color: #ecf0f1;
+            font-size: 1.5rem;
+        }
+        
+        .navbar.scrolled .nav-links a {
+            color: #ecf0f1;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Hover effects */
+        .nav-links a:hover {
+            color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .navbar.scrolled .nav-links a:hover {
+            color: #f1c40f;
+            background-color: rgba(241, 196, 15, 0.1);
+        }
+        
+        /* Underline animation */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #e74c3c;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .navbar.scrolled .nav-links a::after {
+            background-color: #f1c40f;
+        }
+        
+        /* Active link style */
+        .nav-links a.active {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .navbar.scrolled .nav-links a.active {
+            color: #f1c40f;
+        }
+        
+        /* Content sections */
+        .content-section {
+            min-height: 100vh;
+            padding: 100px 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        #home {
+            background-color: #f8f9fa;
+        }
+        
+        #about {
+            background-color: #e9ecef;
+        }
+        
+        #services {
+            background-color: #dee2e6;
+        }
+        
+        #portfolio {
+            background-color: #ced4da;
+        }
+        
+        #contact {
+            background-color: #adb5bd;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            color: #495057;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            color: #343a40;
+            max-width: 800px;
+            line-height: 1.8;
+        }
+        
+        .service-list, .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .service-item, .portfolio-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .portfolio-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        form {
+            max-width: 600px;
+            margin-top: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        button {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #1a252f;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#home" class="logo">My WEBsite</a>
+        <ul class="nav-links">
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Home Section -->
+    <section id="home" class="content-section">
+        <h1>Welcome </h1>
+        <p>We are a team of passionate designers and developers dedicated to creating beautiful, functional digital experiences. Our approach combines innovative design with cutting-edge technology to deliver solutions that make an impact.</p>
+        <p>Scroll down to explore what we offer or jump directly to any section using the navigation menu above.</p>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="content-section">
+        <h2>About Us</h2>
+        <p>Founded in 2025, our company has grown from a small startup to a respected player in the digital design industry. We believe in creating meaningful connections between brands and their audiences through thoughtful design and strategic thinking.</p>
+        
+        <h3>Our Team</h3>
+        <p>We're a diverse group of professionals including UX/UI designers, front-end and back-end developers, content strategists, and project managers. What unites us is our commitment to excellence and our passion for solving complex problems with elegant solutions.</p>
+        
+        <h3>Our Values</h3>
+        <ul>
+            <li>User-centered design approach</li>
+            <li>Transparency in all our processes</li>
+            <li>Continuous learning and improvement</li>
+            <li>Sustainable business practices</li>
+            <li>Community involvement and giving back</li>
+        </ul>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services" class="content-section">
+        <h2>Our Services</h2>
+        <p>We offer comprehensive digital solutions tailored to your specific needs. Here's what we can do for you:</p>
+        
+        <div class="service-list">
+            <div class="service-item">
+                <h3>Web Design & Development</h3>
+                <p>Custom websites built for performance, accessibility, and seamless user experiences across all devices.</p>
+            </div>
+            <div class="service-item">
+                <h3>Mobile App Development</h3>
+                <p>Native and cross-platform mobile applications designed to engage users and deliver results.</p>
+            </div>
+            <div class="service-item">
+                <h3>UX/UI Design</h3>
+                <p>User research, wireframing, prototyping, and interface design that puts your users first.</p>
+            </div>
+            <div class="service-item">
+                <h3>Brand Identity</h3>
+                <p>Logo design, color schemes, typography, and brand guidelines to establish your visual identity.</p>
+            </div>
+            <div class="service-item">
+                <h3>Digital Marketing</h3>
+                <p>SEO, content strategy, and social media campaigns to grow your online presence.</p>
+            </div>
+            <div class="service-item">
+                <h3>E-commerce Solutions</h3>
+                <p>Complete online store setups with payment integration and inventory management.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="content-section">
+        <h2>Our Portfolio</h2>
+        <p>Here are some of our recent projects that showcase our capabilities and design philosophy.</p>
+        
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnA2d2k5N3BuYTBqNnB1MDhwaG9vaGJuY2R2OWRuZDljaTZjdDlsMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d8Emd2WnaJR2HoiHQy/giphy.gif" alt="E-commerce Project">
+                <h3>Modern E-commerce Platform</h3>
+                <p>A complete online shopping solution with custom CMS and payment integration.</p>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnUyNndrenRzdzFuMGxqb3NqbTgwNnAzNzAxY2NsMml3bDk0OHZ6MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MnWTL6gmC0h1383aMo/giphy.gif" alt="Mobile App">
+                <h3>Health & Fitness App</h3>
+                <p>iOS and Android app with workout tracking and nutrition planning features.</p>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmZjOXh2YjJ3Y2h0cWVkaTdnbjUxN3o3cTA5bDQ3bWpvcWplMDI4OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2ikwIgNrmPZICNmRyX/giphy.gif" alt="Corporate Website">
+                <h3>Corporate Website Redesign</h3>
+                <p>Complete overhaul of a Fortune 500 company's digital presence.</p>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjBsdXN2MWNmOWhrMHZidW9oc3hsaW1neWszNmhvaDJpaGQ2YjhxdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OvAx6dzXfx5bdfgUQ1/giphy.gif" alt="Brand Identity">
+                <h3>Startup Brand Package</h3>
+                <p>Logo, visual identity, and brand guidelines for a tech startup.</p>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2NzMTB5cDkxY3F4aXJoeXlycXIydm93YjJpYnN5dHc2ZWVvaTR2eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif" alt="Web Application">
+                <h3>Project Management Tool</h3>
+                <p>Custom web application for team collaboration and task management.</p>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExenRxaHowdGthNWlteTdnNDliZmhkOHRwdTN5MHZ2cDFveDZiZWNydiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUA7bbaSmCUfNYjhks/giphy.gif" alt="Marketing Site">
+                <h3>Product Launch Microsite</h3>
+                <p>Interactive marketing site for a new product release.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="content-section">
+        <h2>Get In Touch</h2>
+        <p>Ready to start your project? Have questions about our services? We'd love to hear from you.</p>
+        
+        <form>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject">
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" rows="5" required></textarea>
+            </div>
+            <button type="submit">Send Message</button>
+        </form>
+        
+        <div style="margin-top: 3rem;">
+            <h3>Our Office</h3>
+            <p>123 Street No. 9<br>Himayat Nagar<br>Hyderabad, Telangana, India, 500029</p>
+            <p>Phone: +91 8765432190<br>Email: hello@mywebsite.com</p>
+        </div>
+    </section>
+    
+    <script>
+        // Change navbar style on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            // Update active nav link based on scroll position
+            const sections = document.querySelectorAll('.content-section');
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 100)) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Add active class to clicked nav item
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Remove active class from all links
+                navLinks.forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Additional hover effects with JavaScript
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
